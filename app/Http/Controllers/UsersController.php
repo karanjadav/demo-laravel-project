@@ -20,16 +20,18 @@ class UsersController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        // dd(Session::has('error'));
         if ($request->ajax()) {
             $data = User::latest()->get();
             return datatables()::of($data)
                     ->addIndexColumn()
-                    ->addColumn('action', function($row){
-                           $btn = '<a href="javascript:void(0)" class="edit btn btn-danger btn-sm">Edit</a>
-                           <a href="javascript:void(0)" class="edit btn btn-danger btn-sm">Delete</a>';
+                    ->addColumn('action', function($row) {
+                        $role = Auth::user()->roles()->first()->name;
+                        $url = route('user.destroy', $row->id);
+                        $btn = "<a href='javascript:void(0)' class='edit-user btn btn-success btn-sm' data-name='$row->name'
+                        data-url='" . route('user.update', $row->id)."' data-email='$row->email' data-role='$role' data-toggle='modal' data-target='#editModal'>Edit</a>
+                        <a href='$url' class='edit btn btn-danger btn-sm'>Delete</a>";
 
-                            return $btn;
+                        return $btn;
                     })
                     ->rawColumns(['action'])
                     ->make(true);
@@ -61,37 +63,25 @@ class UsersController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(Request $request, User $user) {
+    try{
+        $user->update([
+            'name'  =>  $request->name
+        ]);
+        $user->assignRole($request->role);
+        toastr()->success('User created succesfully');
+
+        return redirect()->back();
+    } catch (Exception $e) {
+        Log::error($e);
+        toastr()->error($e->getMessage());
+    }
     }
 
     /**
@@ -100,8 +90,11 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
+    public function destroy(User $user) {
+        // $user->posts()->delete();
+        $user->delete();
+
+        toastr()->success('User deleted succesfully');
+        return redirect()->back();
     }
 }

@@ -26,5 +26,6 @@ Route::group(['middleware' => 'CheckAuthRole'],function () {
     Route::get('/home', 'HomeController@index')->name('home');
 
     Route::resource('user', UsersController::class);
+    Route::get('user/delete/{user}', 'UsersController@destroy')->name('user.destroy');
     Route::resource('post', PostController::class);
 });
