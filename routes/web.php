@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('home');
 });
 
 Auth::routes();
@@ -28,4 +27,5 @@ Route::group(['middleware' => 'CheckAuthRole'],function () {
     Route::resource('user', UsersController::class);
     Route::get('user/delete/{user}', 'UsersController@destroy')->name('user.destroy');
     Route::resource('post', PostController::class);
+    Route::get('post/delete/{post}', 'PostController@destroy')->name('post.destroy');
 });

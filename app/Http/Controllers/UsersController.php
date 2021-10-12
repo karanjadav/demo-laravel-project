@@ -91,7 +91,7 @@ class UsersController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(User $user) {
-        // $user->posts()->delete();
+        $user->posts()->delete();
         $user->delete();
 
         toastr()->success('User deleted succesfully');
