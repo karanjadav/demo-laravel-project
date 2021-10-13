@@ -21,7 +21,7 @@ class PostController extends Controller
     public function index(Request $request) {
         if ($request->ajax()) {
             $user = Auth::user();
-            $data = Post::latest()->get();
+            $data = Post::with('user')->latest()->get();
             if(!$user->hasRole('admin')) {
                 $data = $user->posts;
             }

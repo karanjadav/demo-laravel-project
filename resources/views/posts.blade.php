@@ -26,6 +26,7 @@
                                 <th>Title</th>
                                 <th>Content</th>
                                 <th>Image</th>
+                                <th>Posted By</th>
                                 <th width="100px">Action</th>
                             </tr>
                         </thead>
@@ -144,7 +145,7 @@
 @push('scripts')
 <script type="text/javascript">
     $(function () {
-      var table = $('.data-table').DataTable({
+       var table = $('.data-table').DataTable({
           processing: true,
           serverSide: true,
           ajax: "{{ route('post.index') }}",
@@ -153,6 +154,7 @@
               {data: 'title', name: 'title'},
               {data: 'content', name: 'content'},
               {data: 'image', name: 'image'},
+              {data: 'user.name', name: 'user.name'},
               {data: 'action', name: 'action', orderable: false, searchable: false},
           ]
       });
