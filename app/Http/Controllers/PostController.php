@@ -27,6 +27,9 @@ class PostController extends Controller
             }
             return datatables()::of($data)
                     ->addIndexColumn()
+                    ->addColumn('image', function($item) {
+                        return "<img src='".Storage::url($item->image)."' height='100'>";
+                    })
                     ->addColumn('action', function($row) {
                         $url = route('post.destroy', $row->id);
                         $btn = "<a href='javascript:void(0)' class='edit-post btn btn-success btn-sm' data-url='" . route('post.update', $row->id)."'
@@ -35,7 +38,7 @@ class PostController extends Controller
 
                         return $btn;
                     })
-                    ->rawColumns(['action'])
+                    ->rawColumns(['action', 'image'])
                     ->make(true);
         }
        return view('posts');
